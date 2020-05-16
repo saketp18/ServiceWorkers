@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
             override fun onExecuteTask(): String {
                 Thread.sleep(2000)
                 println("onExecuteTask ${Thread.currentThread().name}")
+                println("onExecuteTask: Complete")
                 return "null"
             }
 
@@ -33,17 +34,19 @@ class MainActivity : AppCompatActivity() {
             override fun onExecuteTask(): String {
                 Thread.sleep(4000)
                 println("onExecuteTask ${Thread.currentThread().name}")
+                println("onTaskComplete ${Thread.currentThread().id}")
+                println("onExecuteTask: Complete")
                 return "null"
             }
 
             override fun onTaskComplete() {
                 Toast.makeText(this@MainActivity, "serviceworker + task2", Toast.LENGTH_SHORT).show()
-                println("onTaskComplete ${Thread.currentThread().name}")
+                println("onTaskComplete ${Thread.currentThread().id}")
             }
         })
 
         //Service 2
-        serviceWorker1.addTask(object: ServiceWorker.Task<String> {
+        /*serviceWorker1.addTask(object: ServiceWorker.Task<String> {
             override fun onExecuteTask(): String {
                 Thread.sleep(6000)
                 println("onExecuteTask ${Thread.currentThread().name}")
@@ -66,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity, "serviceworker1 + task2", Toast.LENGTH_SHORT).show()
                 println("onTaskComplete ${Thread.currentThread().name}")
             }
-        })
+        })*/
     }
 
     override fun onDestroy() {
