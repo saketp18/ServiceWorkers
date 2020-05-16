@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
         //Service 1
         serviceWorker.addTask(object: ServiceWorker.Task<String> {
             override fun onExecuteTask(): String {
-                Thread.sleep(2000)
                 println("onExecuteTask ${Thread.currentThread().name}")
                 return "null"
             }
@@ -31,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         })
         serviceWorker.addTask(object: ServiceWorker.Task<String> {
             override fun onExecuteTask(): String {
-                Thread.sleep(4000)
                 println("onExecuteTask ${Thread.currentThread().name}")
                 return "null"
             }
@@ -41,7 +39,6 @@ class MainActivity : AppCompatActivity() {
                 println("onTaskComplete ${Thread.currentThread().name}")
             }
         })
-
         //Service 2
         serviceWorker1.addTask(object: ServiceWorker.Task<String> {
             override fun onExecuteTask(): String {
