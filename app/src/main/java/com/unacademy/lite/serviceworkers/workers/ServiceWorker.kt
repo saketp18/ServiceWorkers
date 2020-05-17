@@ -12,7 +12,7 @@ class ServiceWorker(serviceWorkerName: String) {
     private val executors = Executors.newSingleThreadExecutor()
     private val handler = Handler(Looper.getMainLooper())
 
-    fun addTask(task: Task<Bitmap?>) {
+    fun <T> addTask(task: Task<T>) {
         executors.execute {
             println(_workerName)
             val result = task.onExecuteTask()
