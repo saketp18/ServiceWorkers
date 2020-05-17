@@ -3,6 +3,7 @@ package com.unacademy.lite.serviceworkers.workers
 import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
+import androidx.annotation.WorkerThread
 import java.util.concurrent.Executors
 
 class ServiceWorker(serviceWorkerName: String) {
@@ -13,7 +14,7 @@ class ServiceWorker(serviceWorkerName: String) {
 
     fun addTask(task: Task<Bitmap?>) {
         executors.execute {
-            //println(_workerName)
+            println(_workerName)
             val result = task.onExecuteTask()
             handler.post {
                 task.onTaskComplete(result)
@@ -26,6 +27,7 @@ class ServiceWorker(serviceWorkerName: String) {
     }
 
     interface Task<T> {
+        @WorkerThread
         fun onExecuteTask(): T
         fun onTaskComplete(result: T)
     }
