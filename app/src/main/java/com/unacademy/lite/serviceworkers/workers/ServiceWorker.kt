@@ -1,5 +1,6 @@
 package com.unacademy.lite.serviceworkers.workers
 
+import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
 import java.util.concurrent.Executors
@@ -10,12 +11,12 @@ class ServiceWorker(serviceWorkerName: String) {
     private val executors = Executors.newSingleThreadExecutor()
     private val handler = Handler(Looper.getMainLooper())
 
-    fun addTask(task: Task<String>) {
+    fun addTask(task: Task<Bitmap?>) {
         executors.execute {
             //println(_workerName)
-            task.onExecuteTask()
+            val result = task.onExecuteTask()
             handler.post {
-                task.onTaskComplete()
+                task.onTaskComplete(result)
             }
         }
     }
@@ -26,7 +27,7 @@ class ServiceWorker(serviceWorkerName: String) {
 
     interface Task<T> {
         fun onExecuteTask(): T
-        fun onTaskComplete()
+        fun onTaskComplete(result: T)
     }
 
 }
