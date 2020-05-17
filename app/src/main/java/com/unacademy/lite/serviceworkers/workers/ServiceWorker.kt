@@ -1,15 +1,14 @@
 package com.unacademy.lite.serviceworkers.workers
 
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
-import android.os.Message
 import androidx.annotation.WorkerThread
-import java.util.concurrent.ThreadPoolExecutor
 
 class ServiceWorker(serviceWorkerName: String) {
 
     private val _workerName = serviceWorkerName
-    private lateinit var worker: Worker
+    private lateinit var worker: HandlerThread
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var workerHandler: Handler
 
@@ -18,17 +17,17 @@ class ServiceWorker(serviceWorkerName: String) {
     }
 
     private fun init() {
-        worker = Worker()
+        worker = HandlerThread(_workerName)
         worker.start()
         workerHandler = Handler(worker.looper)
     }
 
-    fun addTask(task: Task<String>) {
+    fun <T> addTask(task: Task<T>) {
         println(_workerName)
         workerHandler.post {
-            task.onExecuteTask()
+            val result = task.onExecuteTask()
             handler.post {
-                task.onTaskComplete()
+                task.onTaskComplete(result)
             }
         }
 
@@ -41,8 +40,6 @@ class ServiceWorker(serviceWorkerName: String) {
     interface Task<T> {
         @WorkerThread
         fun onExecuteTask(): T
-
-        fun onTaskComplete()
+        fun onTaskComplete(result : T)
     }
-
 }
