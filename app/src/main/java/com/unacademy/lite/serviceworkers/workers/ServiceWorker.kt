@@ -1,6 +1,5 @@
 package com.unacademy.lite.serviceworkers.workers
 
-import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.WorkerThread
@@ -29,6 +28,7 @@ class ServiceWorker(serviceWorkerName: String) {
     interface Task<T> {
         @WorkerThread
         fun onExecuteTask(): T
+
         fun onTaskComplete(result: T)
     }
 
