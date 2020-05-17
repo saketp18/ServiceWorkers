@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ServiceWorkers</string>
+    <string name="fetch_image_2">Fetch image 2</string>
+    <string name="fetch_image_1">Fetch image 1</string>
 </resources>

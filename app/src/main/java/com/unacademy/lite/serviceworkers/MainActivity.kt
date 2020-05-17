@@ -1,80 +1,49 @@
 package com.unacademy.lite.serviceworkers
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import com.unacademy.lite.serviceworkers.workers.ServiceWorker
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.unacademy.lite.serviceworkers.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var serviceWorker: ServiceWorker
-    lateinit var serviceWorker1: ServiceWorker
+    private lateinit var viewModel: MainViewModel
+    private lateinit var activityMainBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        serviceWorker = ServiceWorker("ServiceWorkerName")
-        serviceWorker1 = ServiceWorker("ServiceWorkerName1")
-
-        //Service 1
-        serviceWorker.addTask(object: ServiceWorker.Task<String> {
-            override fun onExecuteTask(): String {
-                Thread.sleep(2000)
-                println("onExecuteTask ${Thread.currentThread().name}")
-                println("onExecuteTask: Complete")
-                return "null"
-            }
-
-            override fun onTaskComplete() {
-                Toast.makeText(this@MainActivity, "serviceworker + task1", Toast.LENGTH_SHORT).show()
-                println("onTaskComplete ${Thread.currentThread().name}")
-            }
-        })
-        serviceWorker.addTask(object: ServiceWorker.Task<String> {
-            override fun onExecuteTask(): String {
-                Thread.sleep(4000)
-                println("onExecuteTask ${Thread.currentThread().name}")
-                println("onTaskComplete ${Thread.currentThread().id}")
-                println("onExecuteTask: Complete")
-                return "null"
-            }
-
-            override fun onTaskComplete() {
-                Toast.makeText(this@MainActivity, "serviceworker + task2", Toast.LENGTH_SHORT).show()
-                println("onTaskComplete ${Thread.currentThread().id}")
-            }
-        })
-
-        //Service 2
-        /*serviceWorker1.addTask(object: ServiceWorker.Task<String> {
-            override fun onExecuteTask(): String {
-                Thread.sleep(6000)
-                println("onExecuteTask ${Thread.currentThread().name}")
-                return "null"
-            }
-
-            override fun onTaskComplete() {
-                Toast.makeText(this@MainActivity, "serviceworker1 + task1", Toast.LENGTH_SHORT).show()
-                println("onTaskComplete ${Thread.currentThread().name}")
-            }
-        })
-        serviceWorker1.addTask(object: ServiceWorker.Task<String> {
-            override fun onExecuteTask(): String {
-                Thread.sleep(8000)
-                println("onExecuteTask ${Thread.currentThread().name}")
-                return "null"
-            }
-
-            override fun onTaskComplete() {
-                Toast.makeText(this@MainActivity, "serviceworker1 + task2", Toast.LENGTH_SHORT).show()
-                println("onTaskComplete ${Thread.currentThread().name}")
-            }
-        })*/
+        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(activityMainBinding.root)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        setupObservers()
+        setupClickListeners()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        serviceWorker.shutDown()
-        serviceWorker1.shutDown()
+    private fun setupObservers() {
+        viewModel.apply {
+            fetchImage1.observe(this@MainActivity, Observer {
+                it?.let { bitmap ->
+                    activityMainBinding.image1.setImageBitmap(bitmap)
+                }
+            })
+
+            fetchImage2.observe(this@MainActivity, Observer {
+                it?.let { bitmap ->
+                    activityMainBinding.image2.setImageBitmap(bitmap)
+                }
+            })
+        }
+    }
+
+    private fun setupClickListeners() {
+        activityMainBinding.apply {
+            button1.setOnClickListener {
+                viewModel.fetchImage1AndSet()
+            }
+            button2.setOnClickListener {
+                viewModel.fetchImage2AndSet()
+            }
+        }
     }
 }
